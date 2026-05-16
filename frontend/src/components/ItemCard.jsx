@@ -4,7 +4,7 @@ function ItemCard({ item, onArchivar, onEditar }) {
     const categoria = categorias.find(c => c.id === item.categoriaId)
 
     return (
-        <div style={{ border: '1px solid #ccc', borderRadius: '8px', padding: '12px', marginBottom: '10px' }}>
+        <div className = "card">
         <h3>{item.nombre}</h3>
         <p>
             {categoria?.emoji} {categoria?.nombre}
@@ -13,21 +13,20 @@ function ItemCard({ item, onArchivar, onEditar }) {
         <p>Número: {item.atributos?.numero}</p>
         {item.notas && <p>Notas: {item.notas}</p>}
 
-        <select
+        <div className = "card-acciones">
+            <select
             value={item.estado}
             onChange={(e) => onEditar(item.id, { estado: e.target.value })}
         >
             <option value="faltante">Faltante</option>
             <option value="repetida">Repetida</option>
             <option value="pegada">Pegada</option>
-        </select>
+            </select>
 
-        <button
-            onClick={() => onArchivar(item.id)}
-            style={{ marginLeft: '10px', color: 'red' }}
-        >
-            Archivar
-        </button>
+            <button className = "btn-archivar" onClick={() => onArchivar(item.id)}>
+                Archivar
+            </button>
+        </div>
         </div>
     )
 }

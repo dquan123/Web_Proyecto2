@@ -56,7 +56,7 @@ function FormularioItem({ onAgregar }) {
         <div>
             <label>Grupo:</label>
             <select value={categoriaId} onChange={(e) => setCategoriaId(e.target.value)}>
-            {CATEGORIAS.map(cat => (
+            {categorias.map(cat => (
                 <option key={cat.id} value={cat.id}>
                 {cat.emoji} {cat.nombre}
                 </option>

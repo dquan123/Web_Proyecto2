@@ -1,6 +1,6 @@
 import { categorias } from "../utils/categorias";
 
-function itemCard({ item, onArchivar, onEditar }) {
+function ItemCard({ item, onArchivar, onEditar }) {
     const categoria = categorias.find(c => c.id === item.categoriaId)
 
     return (
@@ -32,4 +32,4 @@ function itemCard({ item, onArchivar, onEditar }) {
     )
 }
 
-export default itemCard
+export default ItemCard

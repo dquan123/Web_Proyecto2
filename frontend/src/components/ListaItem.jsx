@@ -1,6 +1,6 @@
-import itemCard from "./ItemCard";
+import ItemCard from "./ItemCard";
 
-function ListaItem(items, onArchivar, onEditar) {
+function ListaItem({ items, onArchivar, onEditar }) {
     const itemArchivos = items.filter(item => item.activo)
     
     if (itemArchivos.length === 0) {
@@ -10,7 +10,7 @@ function ListaItem(items, onArchivar, onEditar) {
     return (
         <div>
             {itemArchivos.map(item => (
-                <itemCard 
+                <ItemCard 
                     key={item.id} 
                     item={item} 
                     onArchivar={onArchivar} 

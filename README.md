@@ -25,6 +25,5 @@ node src/index.js
 
 ## Mis primeros Items
 
-[AQUÍ PEGÁ LA CAPTURA DE PANTALLA CON 3 ESTAMPAS REALES TUYAS]
+![Mis estampas](mis_estampas.png)
 
-Las estampas que agregué son reales de mi álbum del Mundial 2026.

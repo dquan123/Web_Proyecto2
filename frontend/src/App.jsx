@@ -9,9 +9,9 @@ function AppContenido() {
   const { tema, toggleTema } = useTheme()
   const [items, setItems] = useState([])
 
-  // useRef #1 — referencia al input de nombre para hacer focus
+  // useRef #1 — enfoca el input de nombre después de agregar una estampa
   const inputRef = useRef(null)
-  // useRef #2 — referencia al último item agregado para scroll automático
+  // useRef #2 — referencia al último item para scroll automático al agregarlo
   const ultimoItemRef = useRef(null)
 
   // Cargar items al montar y cuando cambia el modo

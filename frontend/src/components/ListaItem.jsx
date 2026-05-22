@@ -1,24 +1,28 @@
-import ItemCard from "./ItemCard";
+import ItemCard from './ItemCard'
 
-function ListaItem({ items, onArchivar, onEditar }) {
-    const itemArchivos = items.filter(item => item.activo)
-    
-    if (itemArchivos.length === 0) {
-        return <p>No hay estampas aún</p>
-    }
+function ListaItem({ items, onArchivar, onEditar, ultimoItemRef }) {
+  const itemsActivos = items.filter(item => item.activo)
 
-    return (
-        <div>
-            {itemArchivos.map(item => (
-                <ItemCard 
-                    key={item.id} 
-                    item={item} 
-                    onArchivar={onArchivar} 
-                    onEditar={onEditar} 
-                />
-            ))}
+  if (itemsActivos.length === 0) {
+    return <p>No hay estampas todavía. ¡Agregá una!</p>
+  }
+
+  return (
+    <div>
+      {itemsActivos.map((item, index) => (
+        <div
+          key={item.id}
+          ref={index === itemsActivos.length - 1 ? ultimoItemRef : null}
+        >
+          <ItemCard
+            item={item}
+            onArchivar={onArchivar}
+            onEditar={onEditar}
+          />
         </div>
-    )
+      ))}
+    </div>
+  )
 }
 
 export default ListaItem

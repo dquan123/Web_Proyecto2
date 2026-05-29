@@ -1,5 +1,5 @@
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer
+  BarChart, Bar, XAxis, YAxis, Tooltip, Legend
 } from 'recharts'
 
 function GraficaActividad({ items }) {
@@ -16,22 +16,20 @@ function GraficaActividad({ items }) {
   })
 
   return (
-    <div style={{ marginBottom: '32px' }}>
+    <div style={{ marginBottom: '32px'}}>
       <h2>Actividad últimos 7 días</h2>
-      <ResponsiveContainer width="100%" height={220}>
-        <BarChart data={datos}>
-          <XAxis dataKey="fecha" tick={{ fontSize: 12 }} />
-          <YAxis allowDecimals={false} />
-          <Tooltip />
-          <Legend />
-          <Bar
-            dataKey="cantidad"
-            name="Estampas"
-            fill="var(--color-acento)"
-            radius={[4, 4, 0, 0]}
-          />
-        </BarChart>
-      </ResponsiveContainer>
+      <BarChart width={700} height={220} data={datos}>
+        <XAxis dataKey="fecha" tick={{ fontSize: 12 }} />
+        <YAxis allowDecimals={false} />
+        <Tooltip />
+        <Legend />
+        <Bar
+          dataKey="cantidad"
+          name="Estampas"
+          fill="var(--color-acento)"
+          radius={[4, 4, 0, 0]}
+        />
+      </BarChart>
     </div>
   )
 }

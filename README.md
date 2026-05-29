@@ -64,6 +64,7 @@ AppContenido bajó a 19.6ms. useMemo evita recalcular la lista filtrada
 y las estadísticas en cada render, reduciendo el trabajo del componente principal.
 
 ## Mi gráfica original
+![Grafica 3](grafica-3.png)
 
 La tercera gráfica muestra los estados de las estampas (faltante, repetida, pegada)
 agrupados por categoría usando un BarChart agrupado. La elegí porque de un vistazo

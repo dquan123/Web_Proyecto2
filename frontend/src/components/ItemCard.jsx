@@ -1,3 +1,4 @@
+import react from "react";
 import { categorias } from "../utils/categorias";
 
 function ItemCard({ item, onArchivar, onEditar }) {
@@ -31,4 +32,4 @@ function ItemCard({ item, onArchivar, onEditar }) {
     )
 }
 
-export default ItemCard
+export default react.memo(ItemCard)

@@ -12,7 +12,7 @@ Aplicación para gestionar mi colección de estampas del Mundial 2026.
 ### Frontend
 ```bash
 cd frontend
-npm install
+npm install --legacy-peer-deps
 npm run dev
 ```
 
@@ -22,6 +22,8 @@ cd backend
 npm install
 node src/index.js
 ```
+
+El flag `--legacy-peer-deps` es necesario porque Recharts 2.12.7 requiere React 18 y el proyecto usa esa versión.
 
 ## Mis primeros Items
 

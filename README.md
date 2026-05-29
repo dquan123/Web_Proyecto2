@@ -49,3 +49,38 @@ node src/index.js
 | Borde | #334155 | Bordes de tarjetas | Azul con tonos grises que separa sin romper combinación oscura |
 | Peligro | #f87171 | Botón archivar | Rojo claro que funciona sobre fondos oscuros sin perder su funcionalidad |
 
+## Profiler — Optimización con useMemo
+
+### Antes
+![Profiler antes](profiler_antes.png)
+
+AppContenido tardó 24.8ms. Todos los componentes se re-renderizaron
+al escribir en el buscador.
+
+### Después
+![Profiler después](profiler_despues.png)
+
+AppContenido bajó a 19.6ms. useMemo evita recalcular la lista filtrada
+y las estadísticas en cada render, reduciendo el trabajo del componente principal.
+
+## Mi gráfica original
+![Grafica 3](grafica-3.png)
+
+La tercera gráfica muestra los estados de las estampas (faltante, repetida, pegada)
+agrupados por categoría usando un BarChart agrupado. La elegí porque de un vistazo
+puedo ver en qué grupos del álbum me faltan más estampas y dónde tengo más repetidas,
+que es la información más útil para saber con quién intercambiar.
+
+## Mis 3 decisiones técnicas
+
+1. **Estructura del reducer**: organicé las acciones separando las que modifican
+la lista (AGREGAR, ELIMINAR, CAMBIAR_ESTADO) de las que modifican los filtros
+(FILTRAR, LIMPIAR_FILTROS) para que sea fácil encontrar cada caso.
+
+2. **Acción más difícil**: REGISTRAR_ACTIVIDAD, porque debía actualizar solo
+el campo fechaActividad del item correcto sin mutar el estado anterior,
+usando map() para crear un nuevo array.
+
+3. **Gráfica más compleja**: GraficaEstados, porque transforma los datos dos veces:
+primero agrupa por categoría y luego cuenta por estado dentro de cada grupo,
+generando el formato que necesita el BarChart agrupado.

@@ -1,25 +1,30 @@
-import { useState, useEffect, useRef } from 'react'
+import { useReducer, useEffect, useRef, useMemo, useCallback } from 'react'
 import { StorageProvider, useStorage } from './context/StorageProvider'
 import { ThemeProvider, useTheme } from './context/ThemeContext'
+import { itemsReducer, estadoInicial } from './reducers/itemsReducer'
 import FormularioItem from './components/FormularioItem'
 import ListaItem from './components/ListaItem'
+import Filtros from './components/Filtros'
+import GraficaActividad from './components/GraficaActividad'
+import GraficaCategorias from './components/GraficaCategorias'
+import GraficaEstados from './components/GraficaEstados'
 
 function AppContenido() {
   const { modo, setModo, obtenerItems, guardarItem, eliminarItem, cargando } = useStorage()
   const { tema, toggleTema } = useTheme()
-  const [items, setItems] = useState([])
+  const [estado, dispatch] = useReducer(itemsReducer, estadoInicial)
 
-  // useRef #1 — enfoca el input de nombre después de agregar una estampa
   const inputRef = useRef(null)
-  // useRef #2 — referencia al último item para scroll automático al agregarlo
   const ultimoItemRef = useRef(null)
 
   // Cargar items al montar y cuando cambia el modo
   useEffect(() => {
-    obtenerItems().then(data => setItems(data))
+    obtenerItems().then(data => {
+      dispatch({ type: 'HIDRATAR', payload: data })
+    })
   }, [modo])
 
-  // Atajo Ctrl+N — enfocar el input de nombre
+  // Atajo Ctrl+H — enfocar input
   useEffect(() => {
     const handler = (e) => {
       if (e.ctrlKey && e.key === 'h') {
@@ -42,29 +47,51 @@ function AppContenido() {
     return () => window.removeEventListener('keydown', handler)
   }, [toggleTema])
 
+  // useMemo — lista filtrada
+  const itemsFiltrados = useMemo(() => {
+    return estado.lista
+      .filter(item => item.activo)
+      .filter(item =>
+        estado.filtroCategoria === 'todas' ||
+        item.categoriaId === estado.filtroCategoria
+      )
+      .filter(item =>
+        estado.filtroEstado === 'todos' ||
+        item.estado === estado.filtroEstado
+      )
+      .filter(item =>
+        item.nombre.toLowerCase().includes(estado.busqueda.toLowerCase())
+      )
+  }, [estado.lista, estado.filtroCategoria, estado.filtroEstado, estado.busqueda])
+
+  // useMemo — estadísticas para las gráficas
+  const estadisticas = useMemo(() => ({
+    total: itemsFiltrados.length,
+    faltantes: itemsFiltrados.filter(i => i.estado === 'faltante').length,
+    repetidas: itemsFiltrados.filter(i => i.estado === 'repetida').length,
+    pegadas: itemsFiltrados.filter(i => i.estado === 'pegada').length,
+  }), [itemsFiltrados])
+
+  // useCallback — handlers estables para ItemCard
+  const handleArchivar = useCallback(async (id) => {
+    await eliminarItem(id)
+    dispatch({ type: 'ELIMINAR', payload: id })
+  }, [eliminarItem])
+
+  const handleEditar = useCallback(async (id, cambios) => {
+    const item = estado.lista.find(i => i.id === id)
+    const itemActualizado = { ...item, ...cambios }
+    await guardarItem(itemActualizado)
+    dispatch({ type: 'CAMBIAR_ESTADO', payload: { id, estado: cambios.estado } })
+  }, [estado.lista, guardarItem])
+
   const handleAgregar = async (nuevoItem) => {
     await guardarItem(nuevoItem)
-    const data = await obtenerItems()
-    setItems(data)
-    // useRef #1 — focus al input después de agregar
+    dispatch({ type: 'AGREGAR', payload: nuevoItem })
     inputRef.current?.focus()
-    // useRef #2 — scroll al último item
     setTimeout(() => {
       ultimoItemRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, 100)
-  }
-
-  const handleArchivar = async (id) => {
-    await eliminarItem(id)
-    const data = await obtenerItems()
-    setItems(data)
-  }
-
-  const handleEditar = async (id, cambios) => {
-    const item = items.find(i => i.id === id)
-    await guardarItem({ ...item, ...cambios })
-    const data = await obtenerItems()
-    setItems(data)
   }
 
   return (
@@ -83,10 +110,27 @@ function AppContenido() {
 
       {cargando && <p>Cargando...</p>}
 
+      <div style={{ marginBottom: '16px' }}>
+        <p>Total: {estadisticas.total} | Faltantes: {estadisticas.faltantes} | Repetidas: {estadisticas.repetidas} | Pegadas: {estadisticas.pegadas}</p>
+      </div>
+
       <FormularioItem onAgregar={handleAgregar} inputRef={inputRef} />
+
+      <Filtros
+        filtroCategoria={estado.filtroCategoria}
+        filtroEstado={estado.filtroEstado}
+        busqueda={estado.busqueda}
+        dispatch={dispatch}
+      />
+
+      <GraficaActividad items={itemsFiltrados} />
+      <GraficaCategorias items={itemsFiltrados} />
+      <GraficaEstados items={itemsFiltrados} />
+
       <hr />
+
       <ListaItem
-        items={items}
+        items={itemsFiltrados}
         onArchivar={handleArchivar}
         onEditar={handleEditar}
         ultimoItemRef={ultimoItemRef}

@@ -5,6 +5,10 @@ Aplicación full-stack para gestionar mi colección de estampas del Mundial 2026
 - **Demo**: https://web-proyecto2.vercel.app
 - **Backend**: https://web-proyecto2-backend.onrender.com
 
+## Video de demostración
+
+[Ver video de demostración](https://youtu.be/zfXckiTCdss)
+
 ## Screenshots
 
 ### Modo Claro

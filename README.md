@@ -86,3 +86,4 @@ usando map() para crear un nuevo array.
 3. **Gráfica más compleja**: GraficaEstados, porque transforma los datos dos veces:
 primero agrupa por categoría y luego cuenta por estado dentro de cada grupo,
 generando el formato que necesita el BarChart agrupado.
+=======

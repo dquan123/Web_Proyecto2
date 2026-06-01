@@ -2,6 +2,8 @@ import { useReducer, useEffect, useRef, useMemo, useCallback } from 'react'
 import { StorageProvider, useStorage } from './context/StorageProvider'
 import { ThemeProvider, useTheme } from './context/ThemeContext'
 import { itemsReducer, estadoInicial } from './reducers/itemsReducer'
+import { useAtajoTeclado } from './hooks/useAtajoTeclado'
+import { useProgresoAlbum } from './hooks/useProgresoAlbum'
 import FormularioItem from './components/FormularioItem'
 import ListaItem from './components/ListaItem'
 import Filtros from './components/Filtros'
@@ -24,28 +26,9 @@ function AppContenido() {
     })
   }, [modo])
 
-  // Atajo Ctrl+H — enfocar input
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.ctrlKey && e.key === 'h') {
-        e.preventDefault()
-        inputRef.current?.focus()
-      }
-    }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [])
-
-  // Atajo T — cambiar tema
-  useEffect(() => {
-    const handler = (e) => {
-      const enInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)
-      if (enInput) return
-      if (e.key === 't' || e.key === 'T') toggleTema()
-    }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [toggleTema])
+  // useAtajoTeclado — reemplaza los useEffect duplicados de atajos
+  useAtajoTeclado('h', () => inputRef.current?.focus(), { ctrl: true })
+  useAtajoTeclado('t', toggleTema)
 
   // useMemo — lista filtrada
   const itemsFiltrados = useMemo(() => {
@@ -63,6 +46,9 @@ function AppContenido() {
         item.nombre.toLowerCase().includes(estado.busqueda.toLowerCase())
       )
   }, [estado.lista, estado.filtroCategoria, estado.filtroEstado, estado.busqueda])
+
+  // useProgresoAlbum — estadísticas del álbum
+  const progreso = useProgresoAlbum(estado.lista)
 
   // useMemo — estadísticas para las gráficas
   const estadisticas = useMemo(() => ({
@@ -110,8 +96,21 @@ function AppContenido() {
 
       {cargando && <p>Cargando...</p>}
 
-      <div style={{ marginBottom: '16px' }}>
-        <p>Total: {estadisticas.total} | Faltantes: {estadisticas.faltantes} | Repetidas: {estadisticas.repetidas} | Pegadas: {estadisticas.pegadas}</p>
+      <div style={{
+        background: 'var(--color-superficie)',
+        padding: '12px 16px',
+        borderRadius: '12px',
+        marginBottom: '16px',
+        border: '1px solid var(--color-borde)',
+        display: 'flex',
+        gap: '16px',
+        flexWrap: 'wrap'
+      }}>
+        <span>📊 Total: <strong>{progreso.total}</strong></span>
+        <span>✅ Pegadas: <strong>{progreso.pegadas}</strong></span>
+        <span>❌ Faltantes: <strong>{progreso.faltantes}</strong></span>
+        <span>🔁 Repetidas: <strong>{progreso.repetidas}</strong></span>
+        <span>🎯 Completado: <strong>{progreso.porcentaje}%</strong></span>
       </div>
 
       <FormularioItem onAgregar={handleAgregar} inputRef={inputRef} />
